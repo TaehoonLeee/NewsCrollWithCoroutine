@@ -16,14 +16,19 @@ class DashboardViewModel @ViewModelInject constructor(
 ): ViewModel() {
 
     private val _category = MutableLiveData<List<String>>()
+    private val _newsList = MutableLiveData<List<News>>()
+
     val category : LiveData<List<String>>
         get() = _category
+    val newsList : LiveData<List<News>>
+        get() = _newsList
 
     init {
         viewModelScope.launch {
             CoroutineScope(IO).launch {
                 Log.e("viewmodel", "test")
                 getCategory("https://news.naver.com/main/main.nhn?mode=LSD&mid=shm&sid1=105", "ul.nav")
+                getNewsList()
             }
         }
     }
@@ -33,5 +38,9 @@ class DashboardViewModel @ViewModelInject constructor(
             url,
             query
         ))
+    }
+
+    suspend fun getNewsList() {
+        _newsList.postValue(crollingRepository.getNewsList())
     }
 }

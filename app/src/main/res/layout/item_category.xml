@@ -7,8 +7,13 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     tools:text="@tools:sample/lorem"
-    tools:textColor="@android:color/black"
+    android:textColor="@android:color/black"
     app:strokeColor="@android:color/black"
-    style="?attr/materialButtonOutlinedStyle">
+    android:backgroundTint="@android:color/white"
+    app:strokeWidth="2dp"
+    android:layout_margin="8dp"
+    app:cornerRadius="16dp"
+    android:elevation="24dp"
+    style="?attr/materialButtonStyle">
 
 </com.google.android.material.button.MaterialButton>

@@ -25,11 +25,14 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
     private val dashboardViewModel by viewModels<DashboardViewModel>()
     private lateinit var categoryAdapter: CategoryAdapter
+    private lateinit var newsAdapter : NewsAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         categoryAdapter = CategoryAdapter()
+        newsAdapter = NewsAdapter()
+
         rvCategory.apply {
             isNestedScrollingEnabled = false
             layoutManager =
@@ -37,6 +40,8 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             adapter = categoryAdapter
         }
 
+        rvNewsList.layoutManager = LinearLayoutManager(requireContext())
+        rvNewsList.adapter = newsAdapter
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -48,6 +53,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                 Log.e("Fragment", it.get(0))
                 categoryAdapter.submitList(it.take(it.size))
             }
+        })
+        dashboardViewModel.newsList.observe(viewLifecycleOwner, Observer {
+            newsAdapter.setNewsList(it)
         })
     }
 }
