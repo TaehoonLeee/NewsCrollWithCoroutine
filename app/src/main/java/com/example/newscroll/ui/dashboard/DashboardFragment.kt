@@ -6,39 +6,48 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newscroll.R
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_dashboard.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class DashboardFragment : Fragment() {
+class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
     private val dashboardViewModel by viewModels<DashboardViewModel>()
+    private lateinit var categoryAdapter: CategoryAdapter
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        val root = inflater.inflate(R.layout.fragment_dashboard, container, false)
-        val textView: TextView = root.findViewById(R.id.text_dashboard)
-        dashboardViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
-
-        val button : Button = root.findViewById(R.id.button)
-        button.setOnClickListener {
-            if (dashboardViewModel.category.isNotEmpty()) {
-                Log.e("ViewModel", dashboardViewModel.category.get(0))
-            }
+        categoryAdapter = CategoryAdapter()
+        rvCategory.apply {
+            isNestedScrollingEnabled = false
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = categoryAdapter
         }
 
-        return root
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        dashboardViewModel.category.observe(viewLifecycleOwner, Observer {
+            Log.e("Fragment", "test")
+            if (it != null && it.isNotEmpty() ) {
+                Log.e("Fragment", it.get(0))
+                categoryAdapter.submitList(it.take(it.size))
+            }
+        })
     }
 }

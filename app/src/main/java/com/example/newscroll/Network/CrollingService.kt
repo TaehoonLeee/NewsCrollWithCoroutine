@@ -1,12 +1,11 @@
 package com.example.newscroll.Network
 
 import android.util.Log
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 
@@ -39,7 +38,7 @@ class CrollingService {
         return category
     }
 
-    suspend fun getCategory(url: String, query: String) : List<String> {
+    fun getCategory(url: String, query: String) : List<String> {
 //        val url2 = "https://news.naver.com/main/main.nhn?mode=LSD&mid=shm&sid1=105"
         val doc = Jsoup.connect(url).timeout(10000).get()
 //        val category = doc.select("ul.nav").text().split(" ")

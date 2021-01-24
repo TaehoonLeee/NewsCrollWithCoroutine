@@ -5,6 +5,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.newscroll.Repositories.CrollingRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -14,23 +15,23 @@ class DashboardViewModel @ViewModelInject constructor(
     private val crollingRepository: CrollingRepository
 ): ViewModel() {
 
-    var category : List<String> = ArrayList()
-    private val _text = MutableLiveData<String>()
-    val text: LiveData<String> = _text
+    private val _category = MutableLiveData<List<String>>()
+    val category : LiveData<List<String>>
+        get() = _category
 
     init {
-        CoroutineScope(IO).launch {
-            category = crollingRepository.getCategory(
-                "https://news.naver.com/main/main.nhn?mode=LSD&mid=shm&sid1=105",
-                "ul.nav"
-            )
+        viewModelScope.launch {
+            CoroutineScope(IO).launch {
+                Log.e("viewmodel", "test")
+                getCategory("https://news.naver.com/main/main.nhn?mode=LSD&mid=shm&sid1=105", "ul.nav")
+            }
         }
-        _text.value = "test"
     }
 
-//    fun getCategory(url : String, query : String) {
-//        viewModelScope.launch {
-//            category = crollingRepository.getCategory(url, query)
-//        }
-//    }
+    suspend fun getCategory(url : String, query : String) {
+        _category.postValue(crollingRepository.getCategory(
+            url,
+            query
+        ))
+    }
 }
