@@ -3,13 +3,19 @@ package com.example.newscroll.ui.dashboard
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newscroll.R
 import kotlinx.android.synthetic.main.item_category.view.*
 
-class CategoryAdapter : ListAdapter<String, CategoryAdapter.CategoryViewHolder>(COMPARATOR) {
+data class Category(
+    val title : String,
+    val url : String?
+)
+
+class CategoryAdapter : ListAdapter<Category, CategoryAdapter.CategoryViewHolder>(COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         return CategoryViewHolder.from(parent)
@@ -22,9 +28,12 @@ class CategoryAdapter : ListAdapter<String, CategoryAdapter.CategoryViewHolder>(
 
     class CategoryViewHolder private constructor(itemView : View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(category: String) {
+        fun bind(category: Category) {
+            itemView.setOnClickListener {
+                Toast.makeText(itemView.context, category.url, Toast.LENGTH_LONG).show()
+            }
             itemView.apply {
-                btnCategory.text = category
+                btnCategory.text = category.title
             }
         }
 
@@ -38,10 +47,10 @@ class CategoryAdapter : ListAdapter<String, CategoryAdapter.CategoryViewHolder>(
     }
 
     companion object {
-        private val COMPARATOR = object : DiffUtil.ItemCallback<String>() {
-            override fun areItemsTheSame(oldItem: String, newItem: String): Boolean = oldItem == newItem
+        private val COMPARATOR = object : DiffUtil.ItemCallback<Category>() {
+            override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean = oldItem == newItem
 
-            override fun areContentsTheSame(oldItem: String, newItem: String): Boolean = oldItem == newItem
+            override fun areContentsTheSame(oldItem: Category, newItem: Category): Boolean = oldItem == newItem
         }
     }
 }

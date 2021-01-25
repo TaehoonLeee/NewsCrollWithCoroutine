@@ -1,5 +1,6 @@
 package com.example.newscroll.ui.dashboard
 
+import android.accounts.NetworkErrorException
 import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
@@ -11,25 +12,40 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 
+import com.example.newscroll.model.Result
+import kotlinx.coroutines.async
+
 class DashboardViewModel @ViewModelInject constructor(
     private val crollingRepository: CrollingRepository
 ): ViewModel() {
 
-    private val _category = MutableLiveData<List<String>>()
-    private val _newsList = MutableLiveData<List<News>>()
+    private val _category = MutableLiveData<Result<List<Category>>>()
+    private val _newsList = MutableLiveData<Result<List<News>>>()
 
-    val category : LiveData<List<String>>
+    val category : LiveData<Result<List<Category>>>
         get() = _category
-    val newsList : LiveData<List<News>>
+    val newsList : LiveData<Result<List<News>>>
         get() = _newsList
 
     init {
+        onGetNaverNewsInformation()
+    }
+
+    fun onRefresh() {
+        onGetNaverNewsInformation()
+    }
+
+    private fun onGetNaverNewsInformation() {
         viewModelScope.launch {
-            CoroutineScope(IO).launch {
-                Log.e("viewmodel", "test")
-                getCategory("https://news.naver.com/main/main.nhn?mode=LSD&mid=shm&sid1=105", "ul.nav")
+            _category.postValue(Result.Loading(null))
+            _newsList.postValue(Result.Loading(null))
+            async(IO) {
+                getCategory(
+                    "https://news.naver.com/main/main.nhn?mode=LSD&mid=shm&sid1=105",
+                    "ul.nav a"
+                )
                 getNewsList()
-            }
+            }.await()
         }
     }
 
