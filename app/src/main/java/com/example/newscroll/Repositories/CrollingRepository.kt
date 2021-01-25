@@ -18,4 +18,12 @@ class CrollingRepository @Inject constructor(private val crollingService: Crolli
     fun getNewsList() : Result<List<News>> {
         return crollingService.getNewsList()
     }
+
+    fun getCategoryNewsList(url : String, query : List<String>) : Result<List<News>> {
+        return crollingService.getCategoryNewsList(url ,query)
+    }
+
+    fun getDaumNewsList() : Result<List<News>> {
+        return crollingService.getDaumNewsList()
+    }
 }

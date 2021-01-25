@@ -13,33 +13,6 @@ import org.jsoup.nodes.Element
 
 class CrollingService {
 
-    fun getCategory1(url : String, query : String) : List<String>{
-        suspend fun getResult() : List<String> {
-            var category : List<String> = ArrayList()
-
-//            val url = "https://news.naver.com/main/main.nhn?mode=LSD&mid=shm&sid1=105"
-            val doc = Jsoup.connect(url).timeout(10000).get()
-
-//            category = doc.select("ul.nav").text().split(" ")
-            category = doc.select(query).text().split(" ")
-
-            Log.e("Inner service", category.get(0))
-
-            return category
-        }
-
-        var category : List<String> = ArrayList()
-
-        CoroutineScope(IO).launch {
-            Log.e("service in coroutine", "test1")
-            category = getResult()
-        }
-
-        Log.e("service", "test")
-
-        return category
-    }
-
     fun getCategory(url: String, query: String) : Result<List<Category>> {
         val doc : Document
         val category : List<String>
@@ -76,6 +49,55 @@ class CrollingService {
                 thumbNailUrlList.get(it),
                 HeadLineList.get(it).select("a").text(),
                 HeadLineList.get(it).select("div.cluster_text_lede").text()))
+        }
+
+        return Result.Success(newsList)
+    }
+
+    fun getDaumNewsList() : Result<List<News>> {
+        val doc : Document
+        val thumbnailUrlList : List<String>
+        val titleList : List<String>
+        try {
+            doc =
+                Jsoup.connect("https://news.daum.net/digital#1").maxBodySize(0).get()
+            thumbnailUrlList = doc.select("div.section_cate.section_headline").select("img").eachAttr("src")
+            titleList = doc.select("div.section_cate.section_headline").select("img").eachAttr("alt")
+        } catch (e : Exception) { return  Result.Error(e.message!!) }
+
+        val newsList : MutableList<News> = mutableListOf()
+        repeat(thumbnailUrlList.size) {
+            newsList.add(it, News(
+                thumbnailUrl = thumbnailUrlList.get(it),
+                title = titleList.get(it),
+                description = ""
+            ))
+        }
+
+        return Result.Success(newsList)
+    }
+
+    fun getCategoryNewsList(url : String, query: List<String>) : Result<List<News>> {
+        val doc : Document
+        val titleList : List<String>
+        val thumbnailUrlList : List<String>
+        val descriptionList : List<String>
+
+        try {
+            doc =
+                Jsoup.connect(url).maxBodySize(0).get()
+            titleList = doc.select(query.get(0)).select("img").eachAttr("alt")
+            thumbnailUrlList = doc.select(query.get(0)).select("img").eachAttr("src")
+            descriptionList = doc.select(query.get(1)).eachText()
+        } catch ( e : Exception ) { return Result.Error(e.message!!) }
+
+        val newsList : MutableList<News> = mutableListOf()
+        repeat(titleList.size) {
+            newsList.add(it, News(
+                thumbnailUrl = thumbnailUrlList.get(it),
+                title = titleList.get(it),
+                description = descriptionList.get(it)
+            ))
         }
 
         return Result.Success(newsList)

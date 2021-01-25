@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -30,7 +31,11 @@ class CategoryAdapter : ListAdapter<Category, CategoryAdapter.CategoryViewHolder
 
         fun bind(category: Category) {
             itemView.setOnClickListener {
-                Toast.makeText(itemView.context, category.url, Toast.LENGTH_LONG).show()
+                val directions =
+                    DashboardFragmentDirections.actionNavigationDashboardToCategoryNewsFragment(
+                        category.url!!
+                    )
+                it.findNavController().navigate(directions)
             }
             itemView.apply {
                 btnCategory.text = category.title
