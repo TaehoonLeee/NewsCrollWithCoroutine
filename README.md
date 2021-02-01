@@ -1,6 +1,6 @@
 # IT News Crolling Application
 > JSoup의 웹 크롤링을 이용한 네이버, 다음 IT뉴스 크롤링 어플.
-- JSoup, Hilt, Dagger2, Glide를 사용하여 제작한 어플입니다.  
+- JSoup, Hilt, Dagger2, Glide, Coroutine을 사용하여 제작한 어플입니다.  
 - MVVM Architecture로 이루어진 어플입니다.  
 - JSoup을 이용하여 네이버, 다음 뉴스를 크롤링하여 어플에서 보여줍니다.  
 ![스크린샷 2021-02-01 오후 8 35 37](https://user-images.githubusercontent.com/48707020/106454733-8c035000-64ce-11eb-8249-89173e52b813.png)  
