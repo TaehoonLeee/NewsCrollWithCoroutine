@@ -8,7 +8,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.NavArgs
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newscroll.R
 import com.example.newscroll.model.Status
@@ -22,9 +24,12 @@ class CategoryNewsFragment : Fragment(R.layout.fragment_category_news) {
 
     private lateinit var newsAdapter : NewsAdapter
     private val categoryNewsViewModel by viewModels<CategoryNewsViewModel>()
+    private val args : CategoryNewsFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        categoryToolbar.title = args.title
 
         newsAdapter = NewsAdapter()
         rvNewsList.layoutManager = LinearLayoutManager(requireContext())

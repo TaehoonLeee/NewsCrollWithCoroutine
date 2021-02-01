@@ -33,7 +33,8 @@ class CategoryAdapter : ListAdapter<Category, CategoryAdapter.CategoryViewHolder
             itemView.setOnClickListener {
                 val directions =
                     DashboardFragmentDirections.actionNavigationDashboardToCategoryNewsFragment(
-                        category.url!!
+                        category.url!!,
+                        category.title
                     )
                 it.findNavController().navigate(directions)
             }
