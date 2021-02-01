@@ -46,9 +46,11 @@ class CrollingService {
         val newsList : MutableList<News> = mutableListOf()
         repeat(thumbNailUrlList.size) {
             newsList.add(it, News(
-                thumbNailUrlList.get(it),
-                HeadLineList.get(it).select("a").text(),
-                HeadLineList.get(it).select("div.cluster_text_lede").text()))
+                platForm = "naver",
+                thumbnailUrl = thumbNailUrlList.get(it),
+                title = HeadLineList.get(it).select("a").text(),
+                description = HeadLineList.get(it).select("div.cluster_text_lede").text(),
+                url = HeadLineList.get(it).select("a").attr("href")))
         }
 
         return Result.Success(newsList)
@@ -58,19 +60,32 @@ class CrollingService {
         val doc : Document
         val thumbnailUrlList : List<String>
         val titleList : List<String>
+        val descriptionList : List<String>
+        val urlList : MutableList<String> = mutableListOf()
         try {
             doc =
                 Jsoup.connect("https://news.daum.net/digital#1").maxBodySize(0).get()
             thumbnailUrlList = doc.select("div.section_cate.section_headline").select("img").eachAttr("src")
             titleList = doc.select("div.section_cate.section_headline").select("img").eachAttr("alt")
+            descriptionList = doc.select("p.desc_thumb").eachText()
+
+            val headLineUrl = doc.select("div.item_mainnews").select("a").attr("href")
+            val listNewsUrlList = doc.select("ul.list_mainnews").select("a").eachAttr("href")
+            urlList.add(headLineUrl)
+            repeat( (listNewsUrlList.size) / 2 ) {
+                urlList.add(listNewsUrlList.get(it*2))
+            }
+
         } catch (e : Exception) { return  Result.Error(e.message!!) }
 
         val newsList : MutableList<News> = mutableListOf()
         repeat(thumbnailUrlList.size) {
             newsList.add(it, News(
+                platForm = "daum",
                 thumbnailUrl = thumbnailUrlList.get(it),
                 title = titleList.get(it),
-                description = ""
+                description = descriptionList.get(it),
+                url = urlList.get(it)
             ))
         }
 
@@ -82,6 +97,7 @@ class CrollingService {
         val titleList : List<String>
         val thumbnailUrlList : List<String>
         val descriptionList : List<String>
+        val urlList : List<String>
 
         try {
             doc =
@@ -89,14 +105,17 @@ class CrollingService {
             titleList = doc.select(query.get(0)).select("img").eachAttr("alt")
             thumbnailUrlList = doc.select(query.get(0)).select("img").eachAttr("src")
             descriptionList = doc.select(query.get(1)).eachText()
+            urlList = doc.select(query.get(0)).select("a").eachAttr("href")
         } catch ( e : Exception ) { return Result.Error(e.message!!) }
 
         val newsList : MutableList<News> = mutableListOf()
         repeat(titleList.size) {
             newsList.add(it, News(
+                platForm = "category",
                 thumbnailUrl = thumbnailUrlList.get(it),
                 title = titleList.get(it),
-                description = descriptionList.get(it)
+                description = descriptionList.get(it),
+                url = urlList.get(it)
             ))
         }
 

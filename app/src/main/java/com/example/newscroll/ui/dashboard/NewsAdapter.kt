@@ -3,15 +3,21 @@ package com.example.newscroll.ui.dashboard
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.NavDirections
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newscroll.Glide.GlideApp
 import com.example.newscroll.R
+import com.example.newscroll.ui.CategoryNews.CategoryNewsFragmentDirections
+import com.example.newscroll.ui.home.HomeFragmentDirections
 import kotlinx.android.synthetic.main.item_news.view.*
 
 data class News(
+    val platForm : String,
     val thumbnailUrl : String,
     val title : String,
-    val description : String
+    val description : String,
+    val url : String?
 )
 
 class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
@@ -30,6 +36,21 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
     class NewsViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(news: News) {
+            itemView.setOnClickListener {
+                lateinit var direction : NavDirections
+                when(news.platForm) {
+                    "naver" -> {
+                        direction = DashboardFragmentDirections.actionNavigationHomeToNewsContentFragment(news.url!!)
+                    }
+                    "daum" -> {
+                        direction = HomeFragmentDirections.actionNavigationDashboardToNewsContentFragment(news.url!!)
+                    }
+                    "category" -> {
+                        direction = CategoryNewsFragmentDirections.actionCategoryNewsFragmentToNewsContentFragment(news.url!!)
+                    }
+                }
+                it.findNavController().navigate(direction)
+            }
             itemView.apply {
                 GlideApp.with(ivThumbnail)
                     .load(news.thumbnailUrl)

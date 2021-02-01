@@ -24,7 +24,6 @@ class CategoryNewsViewModel @ViewModelInject constructor(
     init {
         if (savedStateHandle.contains("url") ) {
             val url = savedStateHandle.get<String>("url")!!
-            Log.e("categoryViewModel", url)
             onGetCategoryNewsInformation(url)
         }
     }

@@ -9,7 +9,11 @@
         android:id="@+id/navigation_dashboard"
         android:name="com.example.newscroll.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_dashboard_to_newsContentFragment"
+            app:destination="@id/newsContentFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_home"
@@ -19,6 +23,9 @@
         <action
             android:id="@+id/action_navigation_dashboard_to_categoryNewsFragment"
             app:destination="@id/categoryNewsFragment" />
+        <action
+            android:id="@+id/action_navigation_home_to_newsContentFragment"
+            app:destination="@id/newsContentFragment" />
     </fragment>
 
     <fragment
@@ -30,6 +37,18 @@
         android:id="@+id/categoryNewsFragment"
         android:name="com.example.newscroll.ui.CategoryNews.CategoryNewsFragment"
         android:label="CategoryNewsFragment" >
+        <argument
+            android:name="url"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_categoryNewsFragment_to_newsContentFragment"
+            app:destination="@id/newsContentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newsContentFragment"
+        android:name="com.example.newscroll.ui.NewsPage.NewsContentFragment"
+        android:label="fragment_news_content"
+        tools:layout="@layout/fragment_news_content" >
         <argument
             android:name="url"
             app:argType="string" />
