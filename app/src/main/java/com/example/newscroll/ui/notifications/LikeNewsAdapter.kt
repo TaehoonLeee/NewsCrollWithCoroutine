@@ -7,14 +7,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.newscroll.Glide.GlideApp
 import com.example.newscroll.R
 import com.example.newscroll.Room.LikeNews
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.item_dibs.view.*
 import kotlinx.android.synthetic.main.item_news.view.*
+import kotlinx.android.synthetic.main.item_news.view.ivThumbnail
+import kotlinx.android.synthetic.main.item_news.view.tvDescription
+import kotlinx.android.synthetic.main.item_news.view.tvTitle
 
-class LikeNewsAdapter: RecyclerView.Adapter<LikeNewsAdapter.LikeNewsViewHolder>() {
+class LikeNewsAdapter(val onDeleteClick : (LikeNews) -> Unit): RecyclerView.Adapter<LikeNewsAdapter.LikeNewsViewHolder>() {
 
     private var newsList : List<LikeNews> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LikeNewsViewHolder {
-        return LikeNewsViewHolder.from(parent)
+        val inflater = LayoutInflater.from(parent.context)
+        val itemView = inflater.inflate(R.layout.item_dibs, parent, false)
+
+        return LikeNewsViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: LikeNewsViewHolder, position: Int) {
@@ -22,9 +30,13 @@ class LikeNewsAdapter: RecyclerView.Adapter<LikeNewsAdapter.LikeNewsViewHolder>(
         holder.bind(news)
     }
 
-    class LikeNewsViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
+    inner class LikeNewsViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(news: LikeNews) {
+            itemView.btnDelete.setOnClickListener {
+                onDeleteClick(news)
+                Snackbar.make(it, "해당 기사가 목록에서 지워졌습니다.", Snackbar.LENGTH_SHORT).show()
+            }
             itemView.apply {
                 GlideApp.with(ivThumbnail)
                         .load(news.thumbnailUrl)
@@ -32,16 +44,6 @@ class LikeNewsAdapter: RecyclerView.Adapter<LikeNewsAdapter.LikeNewsViewHolder>(
                         .into(ivThumbnail)
                 tvTitle.text = news.title
                 tvDescription.text = news.description
-            }
-        }
-
-
-        companion object {
-            fun from(parent: ViewGroup) : LikeNewsViewHolder {
-                val inflater = LayoutInflater.from(parent.context)
-                val itemView = inflater.inflate(R.layout.item_news, parent, false)
-
-                return LikeNewsViewHolder(itemView)
             }
         }
 

@@ -17,10 +17,10 @@
         android:layout_marginEnd="@dimen/standard_half">
 
         <ImageView
-            android:id="@+id/btnFavorite"
+            android:id="@+id/btnDelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_favorite"
+            android:src="@drawable/ic_baseline_delete_24"
             android:layout_gravity="end|center_vertical" />
     </FrameLayout>
 

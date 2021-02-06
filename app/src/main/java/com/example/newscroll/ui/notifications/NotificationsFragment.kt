@@ -9,8 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newscroll.R
+import com.example.newscroll.Room.LikeNews
+import com.example.newscroll.Utils.ItemDecoration
+import com.example.newscroll.Utils.SwipeHelperCallback
 import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_dashboard.*
@@ -23,10 +27,28 @@ class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        newsAdapter = LikeNewsAdapter()
+        newsAdapter = LikeNewsAdapter{ news -> delete(news)}
 
-        rvNewsList.layoutManager = LinearLayoutManager(requireContext())
-        rvNewsList.adapter = newsAdapter
+        val swipeHelperCallback = SwipeHelperCallback().apply {
+            setClamp(200f)
+        }
+
+        val itemTouchHelper = ItemTouchHelper(swipeHelperCallback)
+        itemTouchHelper.attachToRecyclerView(rvNewsList)
+
+        rvNewsList.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = newsAdapter
+            addItemDecoration(ItemDecoration())
+            setOnTouchListener {_, _ ->
+                swipeHelperCallback.removePreviousClamp(this)
+                false
+            }
+        }
+    }
+
+    private fun delete(news : LikeNews) {
+        notificationsViewModel.delete(news)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

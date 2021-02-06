@@ -106,7 +106,8 @@ class SwipeHelperCallback : ItemTouchHelper.Callback() {
     }
 
     private fun getView(viewHolder: RecyclerView.ViewHolder): View {
-        return (viewHolder as NewsAdapter.NewsViewHolder).itemView.swipeView
+//        return (viewHolder as NewsAdapter.NewsViewHolder).itemView.swipeView
+        return viewHolder.itemView.swipeView
     }
 
     private fun setTag(viewHolder: RecyclerView.ViewHolder, isClamped: Boolean) {

@@ -3,16 +3,14 @@ package com.example.newscroll
 import org.jsoup.Jsoup
 
 fun main(args : Array<String>) {
-    val url = "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=731"
-    val doc = Jsoup.connect(url).get()
+    val url = "https://news.naver.com/main/main.nhn?mode=LSD&mid=shm&sid1=105"
+    val doc = Jsoup.connect(url).maxBodySize(0).get()
 
-    val category = doc.select("dt.photo").select("img").eachAttr("alt")
-    val photo = doc.select("dt.photo").select("img").eachAttr("src")
-    val tmp = doc.select("dt.photo").select("a").eachAttr("href")
-    val description = doc.select("span.lede").eachText()
-
-    repeat(tmp.size) {
-        println(tmp.get(it))
+//    val category = doc.select("div.cluster_head_topic_wrap")
+    val category = doc.select("li.cluster_item") - doc.select("li.cluster_item.as_line")
+    val thumbNailUrlList = doc.select("li.cluster_item").select("img").eachAttr("src")
+    thumbNailUrlList.forEach{
+        println(it)
     }
 }
 

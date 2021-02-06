@@ -23,7 +23,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/srl"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
@@ -33,8 +33,8 @@
             android:id="@+id/rvNewsList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:listitem="@layout/item_news"/>
+            tools:listitem="@layout/item_dibs"/>
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
