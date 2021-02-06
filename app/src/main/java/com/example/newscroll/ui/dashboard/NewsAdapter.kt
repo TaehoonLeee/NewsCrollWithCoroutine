@@ -10,6 +10,7 @@ import com.example.newscroll.Glide.GlideApp
 import com.example.newscroll.R
 import com.example.newscroll.ui.CategoryNews.CategoryNewsFragmentDirections
 import com.example.newscroll.ui.home.HomeFragmentDirections
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.item_news.view.*
 
 data class News(
@@ -20,12 +21,14 @@ data class News(
     val url : String?
 )
 
-class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
+class NewsAdapter(val onFavoriteClick : (News) -> Unit) : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
     private var newsList : List<News> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
-        return NewsViewHolder.from(parent)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_news, parent, false)
+        return NewsViewHolder(view)
+//        return NewsViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
@@ -33,10 +36,10 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
         holder.bind(news)
     }
 
-    class NewsViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
+    inner class NewsViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(news: News) {
-            itemView.setOnClickListener {
+            itemView.swipeView.setOnClickListener {
                 lateinit var direction : NavDirections
                 when(news.platForm) {
                     "naver" -> {
@@ -51,6 +54,10 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
                 }
                 it.findNavController().navigate(direction)
             }
+            itemView.btnFavorite.setOnClickListener {
+                onFavoriteClick(news)
+                Snackbar.make(it, "해당 기사가 즐겨찾기 됐습니다.", Snackbar.LENGTH_SHORT).show()
+            }
             itemView.apply {
                 GlideApp.with(ivThumbnail)
                     .load(news.thumbnailUrl)
@@ -62,16 +69,14 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
             }
         }
 
-
-        companion object {
-            fun from(parent: ViewGroup) : NewsViewHolder {
-                val inflater = LayoutInflater.from(parent.context)
-                val itemView = inflater.inflate(R.layout.item_news, parent, false)
-
-                return NewsViewHolder(itemView)
-            }
-        }
-
+//        companion object {
+//            fun from(parent: ViewGroup) : NewsViewHolder {
+//                val inflater = LayoutInflater.from(parent.context)
+//                val itemView = inflater.inflate(R.layout.item_news, parent, false)
+//
+//                return NewsViewHolder(itemView)
+//            }
+//        }
     }
 
     override fun getItemCount(): Int = newsList.size

@@ -11,13 +11,21 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavArgs
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newscroll.R
+import com.example.newscroll.Room.LikeNews
+import com.example.newscroll.Utils.ItemDecoration
+import com.example.newscroll.Utils.SwipeHelperCallback
 import com.example.newscroll.model.Status
+import com.example.newscroll.ui.dashboard.News
 import com.example.newscroll.ui.dashboard.NewsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 import kotlinx.android.synthetic.main.fragment_category_news.*
+import kotlinx.android.synthetic.main.fragment_category_news.rvNewsList
+import kotlinx.android.synthetic.main.fragment_category_news.srl
+import kotlinx.android.synthetic.main.fragment_dashboard.*
 
 @AndroidEntryPoint
 class CategoryNewsFragment : Fragment(R.layout.fragment_category_news) {
@@ -31,9 +39,23 @@ class CategoryNewsFragment : Fragment(R.layout.fragment_category_news) {
 
         categoryToolbar.title = args.title
 
-        newsAdapter = NewsAdapter()
-        rvNewsList.layoutManager = LinearLayoutManager(requireContext())
-        rvNewsList.adapter = newsAdapter
+        newsAdapter = NewsAdapter{ news -> insert(news) }
+        val swipeHelperCallback = SwipeHelperCallback().apply {
+            setClamp(200f)
+        }
+
+        val itemTouchHelper = ItemTouchHelper(swipeHelperCallback)
+        itemTouchHelper.attachToRecyclerView(rvNewsList)
+
+        rvNewsList.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = newsAdapter
+            addItemDecoration(ItemDecoration())
+            setOnTouchListener {_, _ ->
+                swipeHelperCallback.removePreviousClamp(this)
+                false
+            }
+        }
 
         categoryToolbar.setOnMenuItemClickListener{menuItem ->
             when(menuItem.itemId) {
@@ -43,6 +65,19 @@ class CategoryNewsFragment : Fragment(R.layout.fragment_category_news) {
                 else -> false
             }
         }
+    }
+
+    private fun insert(news: News) {
+        categoryNewsViewModel.insert(
+            LikeNews(
+                id = null,
+                platForm = news.platForm,
+                thumbnailUrl = news.thumbnailUrl,
+                title = news.title,
+                description = news.description,
+                url = news.url
+            )
+        )
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

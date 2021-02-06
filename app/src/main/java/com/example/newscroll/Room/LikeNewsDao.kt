@@ -16,4 +16,7 @@ interface LikeNewsDao {
 
     @Query("SELECT * FROM like_news")
     fun getAllLikeNews() : Flow<List<LikeNews>>
+
+    @Query("DELETE FROM like_news")
+    fun deleteAllNews()
 }

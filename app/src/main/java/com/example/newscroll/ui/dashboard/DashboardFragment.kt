@@ -1,5 +1,6 @@
 package com.example.newscroll.ui.dashboard
 
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -11,9 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newscroll.R
 import com.example.newscroll.Room.LikeNews
+import com.example.newscroll.Utils.ItemDecoration
+import com.example.newscroll.Utils.SwipeHelperCallback
 import com.example.newscroll.model.Status
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_dashboard.*
+import kotlinx.android.synthetic.main.item_news.view.*
 
 @AndroidEntryPoint
 class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
@@ -26,7 +30,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         super.onViewCreated(view, savedInstanceState)
 
         categoryAdapter = CategoryAdapter()
-        newsAdapter = NewsAdapter()
+        newsAdapter = NewsAdapter { news -> insert(news) }
 
         rvCategory.apply {
             isNestedScrollingEnabled = false
@@ -35,33 +39,39 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             adapter = categoryAdapter
         }
 
-        rvNewsList.layoutManager = LinearLayoutManager(requireContext())
-        rvNewsList.adapter = newsAdapter
+        val swipeHelperCallback = SwipeHelperCallback().apply {
+            setClamp(200f)
+        }
+
+        val itemTouchHelper = ItemTouchHelper(swipeHelperCallback)
+        itemTouchHelper.attachToRecyclerView(rvNewsList)
+
+        rvNewsList.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = newsAdapter
+            addItemDecoration(ItemDecoration())
+            setOnTouchListener {_, _ ->
+                swipeHelperCallback.removePreviousClamp(this)
+                false
+            }
+        }
 
         srl.setOnRefreshListener {
             dashboardViewModel.onRefresh()
         }
 
-        val simpleItemTouchCallback : ItemTouchHelper.SimpleCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-                return false
-            }
+    }
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val news = newsAdapter.getNews(viewHolder.adapterPosition)
-                dashboardViewModel.insert(LikeNews(
-                        id = null,
-                        platForm = news.platForm,
-                        thumbnailUrl = news.thumbnailUrl,
-                        title = news.title,
-                        description = news.description,
-                        url = news.url
-                ))
-            }
-        }
-
-        val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
-        itemTouchHelper.attachToRecyclerView(rvNewsList)
+    private fun insert(news : News) {
+        dashboardViewModel.insert(
+            LikeNews(
+            id = null,
+            platForm = news.platForm,
+            thumbnailUrl = news.thumbnailUrl,
+            title = news.title,
+            description = news.description,
+            url = news.url
+        ))
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

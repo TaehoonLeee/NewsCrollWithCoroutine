@@ -5,6 +5,8 @@ import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.example.newscroll.Repositories.CrollingRepository
+import com.example.newscroll.Repositories.LikeNewsRepository
+import com.example.newscroll.Room.LikeNews
 import com.example.newscroll.model.Result
 import com.example.newscroll.ui.dashboard.Category
 import com.example.newscroll.ui.dashboard.News
@@ -14,6 +16,7 @@ import kotlinx.coroutines.launch
 
 class CategoryNewsViewModel @ViewModelInject constructor(
     private val crollingRepository: CrollingRepository,
+    private val likeNewsRepository: LikeNewsRepository,
     @Assisted private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _newsList = MutableLiveData<Result<List<News>>>()
@@ -46,5 +49,9 @@ class CategoryNewsViewModel @ViewModelInject constructor(
             url,
             listOf("dt.photo", "span.lede")
         ))
+    }
+
+    fun insert(news : LikeNews) = viewModelScope.launch {
+        async(Dispatchers.IO) { likeNewsRepository.insert(news) }.await()
     }
 }
