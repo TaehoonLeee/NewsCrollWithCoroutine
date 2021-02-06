@@ -22,17 +22,7 @@ class SwipeHelperCallback : ItemTouchHelper.Callback() {
     ) = false
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-//        val news = newsAdapter.getNews(viewHolder.adapterPosition)
-//        dashboardViewModel.insert(
-//            LikeNews(
-//            id = null,
-//            platForm = news.platForm,
-//            thumbnailUrl = news.thumbnailUrl,
-//            title = news.title,
-//            description = news.description,
-//            url = news.url
-//        )
-//        )
+
     }
 
     override fun clearView(
@@ -126,14 +116,22 @@ class SwipeHelperCallback : ItemTouchHelper.Callback() {
 
     // 다른 View가 swipe 되거나 터치되면 고정 해제
     fun removePreviousClamp(recyclerView: RecyclerView) {
-//        if (currentPosition == previousPosition)
-//            return
+        if (currentPosition == previousPosition)
+            return
         previousPosition?.let {
             val viewHolder = recyclerView.findViewHolderForAdapterPosition(it) ?: return
             getView(viewHolder).translationX = 0f
             setTag(viewHolder, false)
             previousPosition = null
         }
+    }
+
+    fun onClickButton(recyclerView: RecyclerView) {
+        currentPosition?.let {
+            val viewHolder = recyclerView.findViewHolderForAdapterPosition(it) ?: return
+            setTag(viewHolder = viewHolder, isClamped = false)
+        }
+
     }
 
     private var currentPosition: Int? = null

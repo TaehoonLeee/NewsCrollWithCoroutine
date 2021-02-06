@@ -1,6 +1,5 @@
 package com.example.newscroll.ui.dashboard
 
-import android.graphics.Canvas
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -9,7 +8,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.newscroll.R
 import com.example.newscroll.Room.LikeNews
 import com.example.newscroll.Utils.ItemDecoration
@@ -17,7 +15,6 @@ import com.example.newscroll.Utils.SwipeHelperCallback
 import com.example.newscroll.model.Status
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_dashboard.*
-import kotlinx.android.synthetic.main.item_news.view.*
 
 @AndroidEntryPoint
 class DashboardFragment : Fragment(R.layout.fragment_dashboard) {

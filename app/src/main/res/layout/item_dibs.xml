@@ -9,7 +9,6 @@
     app:cardElevation="8dp"
     app:contentPadding="8dp">
 
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

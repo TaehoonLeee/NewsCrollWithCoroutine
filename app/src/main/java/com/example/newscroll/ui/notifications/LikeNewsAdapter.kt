@@ -9,7 +9,6 @@ import com.example.newscroll.R
 import com.example.newscroll.Room.LikeNews
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.item_dibs.view.*
-import kotlinx.android.synthetic.main.item_news.view.*
 import kotlinx.android.synthetic.main.item_news.view.ivThumbnail
 import kotlinx.android.synthetic.main.item_news.view.tvDescription
 import kotlinx.android.synthetic.main.item_news.view.tvTitle
@@ -27,6 +26,7 @@ class LikeNewsAdapter(val onDeleteClick : (LikeNews) -> Unit): RecyclerView.Adap
 
     override fun onBindViewHolder(holder: LikeNewsViewHolder, position: Int) {
         val news = newsList[position]
+
         holder.bind(news)
     }
 
