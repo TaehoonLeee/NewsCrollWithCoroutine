@@ -8,6 +8,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newscroll.Repositories.CrollingRepository
+import com.example.newscroll.Repositories.LikeNewsRepository
+import com.example.newscroll.Room.LikeNews
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -16,7 +18,8 @@ import com.example.newscroll.model.Result
 import kotlinx.coroutines.async
 
 class DashboardViewModel @ViewModelInject constructor(
-    private val crollingRepository: CrollingRepository
+    private val crollingRepository: CrollingRepository,
+    private val likeNewsRepository: LikeNewsRepository
 ): ViewModel() {
 
     private val _category = MutableLiveData<Result<List<Category>>>()
@@ -58,5 +61,9 @@ class DashboardViewModel @ViewModelInject constructor(
 
     suspend fun getNewsList() {
         _newsList.postValue(crollingRepository.getNewsList())
+    }
+
+    fun insert(news : LikeNews) = viewModelScope.launch {
+        async(IO) { likeNewsRepository.insert(news) }.await()
     }
 }

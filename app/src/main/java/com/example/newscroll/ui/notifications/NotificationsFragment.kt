@@ -6,27 +6,34 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newscroll.R
+import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_dashboard.*
 
-class NotificationsFragment : Fragment() {
+@AndroidEntryPoint
+class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
+    private val notificationsViewModel by viewModels<NotificationsViewModel>()
+    private lateinit var newsAdapter : LikeNewsAdapter
 
-    private lateinit var notificationsViewModel: NotificationsViewModel
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
-        notificationsViewModel =
-                ViewModelProvider(this).get(NotificationsViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_notifications, container, false)
-        val textView: TextView = root.findViewById(R.id.text_notifications)
-        notificationsViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
+        newsAdapter = LikeNewsAdapter()
+
+        rvNewsList.layoutManager = LinearLayoutManager(requireContext())
+        rvNewsList.adapter = newsAdapter
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        notificationsViewModel.newsList.observe(viewLifecycleOwner, Observer {
+            newsAdapter.setNewsList(it)
         })
-        return root
     }
 }

@@ -11,7 +11,6 @@ import javax.inject.Singleton
 @Singleton
 class CrollingRepository @Inject constructor(private val crollingService: CrollingService){
     fun getCategory(url : String, query : String) : Result<List<Category>> {
-        Log.e("Repository", "test")
         return crollingService.getCategory(url ,query)
     }
 

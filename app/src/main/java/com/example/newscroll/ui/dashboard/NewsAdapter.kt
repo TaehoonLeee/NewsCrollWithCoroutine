@@ -81,4 +81,8 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
         notifyDataSetChanged()
     }
 
+    fun getNews(index : Int) : News {
+        return newsList.get(index)
+    }
+
 }
